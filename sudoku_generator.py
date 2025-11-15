@@ -26,8 +26,6 @@ class SudokuGenerator:
         self.row_length = row_length
         self.removed_cells = removed_cells
         self.box_length = int(math.sqrt(row_length))
-        self.board = [[0 for x in range(row_length)] for y in range(row_length)]
-
 
 
 
@@ -93,7 +91,11 @@ class SudokuGenerator:
 	Return: boolean
     '''
     def valid_in_box(self, row_start, col_start, num):
-        pass
+        for r in range(0, 2):
+            if num in self.board[row_start+r][col_start+r]:
+                return False
+        return True
+
     
     '''
     Determines if it is valid to enter num at (row, col) in the board
@@ -190,9 +192,9 @@ class SudokuGenerator:
     '''
     Removes the appropriate number of cells from the board
     This is done by setting some values to 0
-    Should be called after the entire solution has been constructed
-    i.e. after fill_values has been called
-    
+    Should be calleds has been called
+     after the entire solution has been constructed
+    i.e. after fill_value
     NOTE: Be careful not to 'remove' the same cell multiple times
     i.e. if a cell is already 0, it cannot be removed again
 
@@ -200,7 +202,15 @@ class SudokuGenerator:
 	Return: None
     '''
     def remove_cells(self):
-        pass
+        removed = 0
+        while removed < self.removed_cells:
+            r = random.randrange(0, self.row_length)
+            c = random.randrange(0, self.row_length)
+
+            if self.board[r][c] != 0:
+                removed = removed + 1
+                self.board[r][c] = 0
+
 
 '''
 DO NOT CHANGE

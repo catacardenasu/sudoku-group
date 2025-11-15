@@ -224,3 +224,23 @@ def generate_sudoku(size, removed):
     sudoku.remove_cells()
     board = sudoku.get_board()
     return board
+
+class Cell:
+    def __init__(self, value, row, col, screen):
+        self.value = value
+        self.row = row
+        self.col = col
+        self.screen = screen
+
+    def set_cell_value(self, value):
+        self.value = value
+
+    def set_sketched_value(self, value):
+        #set value for the sketched value in pygame
+        pass
+
+    def draw(self):
+        #draw cell in pygame
+        #display nonzero value OR no value in cell
+        #the cell is outlined red if it is currently selected
+        pass

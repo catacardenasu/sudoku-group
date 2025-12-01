@@ -126,7 +126,17 @@ class SudokuGenerator:
 	Return: None
     '''
     def fill_box(self, row_start, col_start):
-        pass
+        nums = list(range(1, self.row_length +1))
+        random.shuffle(nums)
+        index = 0
+
+        for r in range(self.box_length):
+            for c in range(self.box_length):
+                self.board[row_start+r][col_start+c] = nums[index]
+                index = index + 1
+
+
+
     
     '''
     Fills the three boxes along the main diagonal of the board
@@ -252,7 +262,6 @@ class Cell:
         self.sketched_value = value
 
     def draw(self):
-        #draw cell in pygame
-        #display nonzero value OR no value in cell
-        #the cell is outlined red if it is currently selected
         pass
+
+

@@ -273,6 +273,19 @@ class Board:
         self.screen = screen
         self.difficulty = difficulty
 
+        if difficulty == "easy":
+            removed = 30
+        if difficulty == "medium":
+            removed = 40
+        if difficulty == "hard":
+            removed = 50
+
+        self.board = generate_sudoku(9, removed)
+        self.original_board = [row[:] for row in self.board]
+
+        self.cells = [[Cell(self.board[r][c], r, c, screen) for c in range(9)] for r in range(9)]
+        self.selected_cell = None
+
     def draw(self):
         # Draw thin lines for every cell
         for i in range(10):
@@ -291,24 +304,41 @@ class Board:
             pygame.draw.line(self.screen, (0,0,0), (x, 0), (x, 513), 3)
 
     def select(self, row, col):
-        pass
+        if self.selected_cell:
+            r,c = self.selected_cell
+            self.cells[r][c].selected = False
+        self.selected_cell = (row, col)
+        self.cells[row][col].selected = True
         # Marks the cell at (row, col) in the board as the current selected cell.
         # Once a cell has been selected, the user can edit its value or sketched value.
 
     def click(self, x, y):
+        if x < 513 and y < 513:
+            row = y // 57
+            col = x // 57
+            return row, col
+        return None
+
         pass
     # If a tuple of (x,y) coordinates is within the displayed board,
     # this function returns a tuple of the (row, col) of the cell which was clicked.
     # Otherwise, this function returns None.
 
     def clear(self):
-        pass
+        if self.selected_cell:
+            r, c = self.selected_cell
+            if self.original_board[r][c] == 0:
+                self.cells[r][c].set_cell_value(0)
+                self.cells[r][c].set_sketched_value(0)
     #     Clears the value cell.
     # Note that the user can only remove the cell values and
     # sketched values that are filled by themselves.
 
     def sketch(self, value):
-        pass
+        if self.selected_cell:
+            r, c = self.selected_cell
+            if self.original_board[r][c] == 0:
+                self.cells[r][c].set_sketched_value(value)
         # Sets the sketched value of the current selected cell equal to the user entered value.
         # It will be displayed at the top left corner of the cell using the draw() function.
 

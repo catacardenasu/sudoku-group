@@ -252,11 +252,12 @@ class Cell:
         self.row = row
         self.col = col
         self.screen = screen
+        self.sketched_value = 0
 
     def set_cell_value(self, value):
         self.value = value
         if value != 0:
-            self.skecthed_value = 0
+            self.sketched_value = 0
 
     def set_sketched_value(self, value):
         #set value for the sketched value in pygame
@@ -267,11 +268,13 @@ class Cell:
 
 
 class Board:
-    def __init__(self, width, height, screen, difficulty)
+    def __init__(self, width, height, screen, difficulty):
         self.width = width
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
+        self.selected = None
+        self.size = 9
 
     def draw(self):
         # Draw thin lines for every cell
@@ -291,12 +294,16 @@ class Board:
             pygame.draw.line(self.screen, (0,0,0), (x, 0), (x, 513), 3)
 
     def select(self, row, col):
-        pass
+        self.selected = (row, col)
         # Marks the cell at (row, col) in the board as the current selected cell.
         # Once a cell has been selected, the user can edit its value or sketched value.
 
     def click(self, x, y):
-        pass
+        if 0 < x < 513 and 0 < y < 513:
+            row = y // 57
+            col = x // 57
+            return (row, col)
+        return None
     # If a tuple of (x,y) coordinates is within the displayed board,
     # this function returns a tuple of the (row, col) of the cell which was clicked.
     # Otherwise, this function returns None.

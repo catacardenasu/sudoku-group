@@ -375,9 +375,11 @@ class Board:
     # Called when the user presses the Enter key.
 
     def reset_to_original(self):
-        pass
+        for r in range (9):
+            for c in range (9):
+                self.cells[r][c].set_cell_value(0)
         #Resets all cells in the board to their original values
-    #(0 if cleared, otherwise the corresponding digit).
+        #(0 if cleared, otherwise the corresponding digit).
 
 
     def is_full(self):

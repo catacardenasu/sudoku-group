@@ -383,7 +383,11 @@ class Board:
 
 
     def is_full(self):
-        pass
+        for r in range(9):
+            for c in range(9):
+                if self.cells[r][c].value == 0:
+                    return False
+        return True
         #Returns a Boolean value indicating whether the board is full or not.
 
     def update_board(self):
@@ -391,7 +395,11 @@ class Board:
         #Updates the underlying 2D board with the values in all cells.
 
     def find_empty(self):
-        pass
+        for r in range(9):
+            for c in range(9):
+                if self.cells[r][c].value == 0:
+                    return (r,c)
+        return None
         #Finds an empty cell and returns its row and col as a tuple (x,y).
 
     def check_board(self):

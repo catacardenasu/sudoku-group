@@ -252,19 +252,45 @@ class Cell:
         self.row = row
         self.col = col
         self.screen = screen
-        self.sketched_value = 0
+        self.sketched_value = None
+        self.selected = False
 
     def set_cell_value(self, value):
         self.value = value
         if value != 0:
-            self.sketched_value = 0
+            self.skecthed_value = 0
 
     def set_sketched_value(self, value):
         #set value for the sketched value in pygame
         self.sketched_value = value
 
     def draw(self):
-        pass
+        # 57 x 57
+        cell_size = 513 // 9  # = 57 pixels per cell
+        x = self.col * cell_size
+        y = self.row * cell_size
+        rect = pygame.Rect(x, y, cell_size, cell_size)
+
+        # Check if mouse is inside this cell
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_pressed = pygame.mouse.get_pressed()[0]  # left button
+
+        if rect.collidepoint(mouse_pos) and mouse_pressed:
+            pygame.draw.rect(self.screen, (255, 0, 0), rect, 3)
+        else:
+            pygame.draw.rect(self.screen, (0, 0, 0), rect, 1)
+
+        # Draw the main value if nonzero
+        if self.value != 0:
+            font = pygame.font.SysFont("arial", 32)
+            text = font.render(str(self.value), True, (0, 0, 0))
+            text_rect = text.get_rect(center=rect.center)
+            self.screen.blit(text, text_rect)
+        elif self.sketched_value != 0:
+            sketch_font = pygame.font.SysFont("arial", 18)
+            text = sketch_font.render(str(self.sketched_value), True, (150, 150, 150))
+            text_rect = text.get_rect(center=rect.center)
+            self.screen.blit(text, text_rect)
 
 
 class Board:
@@ -273,8 +299,19 @@ class Board:
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
-        self.selected = None
-        self.size = 9
+
+        if difficulty == "easy":
+            removed = 30
+        if difficulty == "medium":
+            removed = 40
+        if difficulty == "hard":
+            removed = 50
+
+        self.board = generate_sudoku(9, removed)
+        self.original_board = [row[:] for row in self.board]
+
+        self.cells = [[Cell(self.board[r][c], r, c, screen) for c in range(9)] for r in range(9)]
+        self.selected_cell = None
 
     def draw(self):
         # Draw thin lines for every cell
@@ -294,28 +331,41 @@ class Board:
             pygame.draw.line(self.screen, (0,0,0), (x, 0), (x, 513), 3)
 
     def select(self, row, col):
-        self.selected = (row, col)
+        if self.selected_cell:
+            r,c = self.selected_cell
+            self.cells[r][c].selected = False
+        self.selected_cell = (row, col)
+        self.cells[row][col].selected = True
         # Marks the cell at (row, col) in the board as the current selected cell.
         # Once a cell has been selected, the user can edit its value or sketched value.
 
     def click(self, x, y):
-        if 0 < x < 513 and 0 < y < 513:
+        if x < 513 and y < 513:
             row = y // 57
             col = x // 57
-            return (row, col)
+            return row, col
         return None
+
+        pass
     # If a tuple of (x,y) coordinates is within the displayed board,
     # this function returns a tuple of the (row, col) of the cell which was clicked.
     # Otherwise, this function returns None.
 
     def clear(self):
-        pass
+        if self.selected_cell:
+            r, c = self.selected_cell
+            if self.original_board[r][c] == 0:
+                self.cells[r][c].set_cell_value(0)
+                self.cells[r][c].set_sketched_value(0)
     #     Clears the value cell.
     # Note that the user can only remove the cell values and
     # sketched values that are filled by themselves.
 
     def sketch(self, value):
-        pass
+        if self.selected_cell:
+            r, c = self.selected_cell
+            if self.original_board[r][c] == 0:
+                self.cells[r][c].set_sketched_value(value)
         # Sets the sketched value of the current selected cell equal to the user entered value.
         # It will be displayed at the top left corner of the cell using the draw() function.
 

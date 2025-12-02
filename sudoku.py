@@ -34,7 +34,7 @@ class Button:
     def __init__(self, text, x, y, width, height):
         self.text = text
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = (255, 255, 255)
+        self.color = (255, 165, 0)
         self.text_surface = font_small.render(text, True, (0, 0, 0))
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
@@ -51,6 +51,10 @@ buttons = [
     Button("Medium", WIDTH//2 - 100, 330, 200, 50),
     Button("Hard",   WIDTH//2 - 100, 410, 200, 50),
 ]
+
+# buttons for game won / game over screens
+exit_button = Button("Exit", WIDTH//2 - 100, 400, 200, 50)
+restart_button = Button("Restart", WIDTH//2 - 100, 400, 200, 50)
 
 # Game loop
 clock = pygame.time.Clock()
@@ -80,19 +84,27 @@ while True:
                 elif event.button == 3:
                     state = OVER
 
-            elif state in (WON, OVER):
-                # Click anywhere to return to welcome screen
-                state = WELCOME
+            elif state == WON:
+                if exit_button.is_clicked(mouse_pos):
+                    state = WELCOME
+
+            elif state == OVER:
+                if restart_button.is_clicked(mouse_pos):
+                    state = WELCOME
 
     # Draw depending on state
     if state == WELCOME:
         screen.blit(welcome_bg, (0, 0))
-        title = font_large.render("Welcome!", True, (0, 0, 0))
-        screen.blit(title, (WIDTH//2 - title.get_width()//2, 120))
+        title1 = font_large.render("Welcome to Sodoku", True, (0, 0, 0))
+        font_small = pygame.font.SysFont(None, 48)
+        title2 = font_small.render("Select Game Mode:", True, (0, 0, 255))
+        screen.blit(title1, (WIDTH//2 - title1.get_width()//2, 120))
+        screen.blit(title2, (WIDTH//2 - title2.get_width()//2, 120 + title1.get_height() + 10))
         for b in buttons:
             b.draw(screen)
 
     elif state == GAME:
+        # FIX
         text = font_large.render("Game in Progress...", True, (0, 0, 0))
         sub = font_small.render("Left Click = Win | Right Click = Lose", True, (0, 0, 0))
         screen.blit(text, (WIDTH//2 - text.get_width()//2, 200))
@@ -100,13 +112,15 @@ while True:
 
     elif state == WON:
         screen.blit(won_bg, (0, 0))
-        text = font_large.render("You Won!", True, (255, 255, 255))
+        text = font_large.render("You Won!", True, (0, 0, 0))
         screen.blit(text, (WIDTH//2 - text.get_width()//2, 100))
+        exit_button.draw(screen)
 
     elif state == OVER:
         screen.blit(over_bg, (0, 0))
-        text = font_large.render("Game Over", True, (255, 255, 255))
+        text = font_large.render("Game Over", True, (0, 0, 0))
         screen.blit(text, (WIDTH//2 - text.get_width()//2, 100))
+        restart_button.draw(screen)
 
     pygame.display.update()
     clock.tick(60)

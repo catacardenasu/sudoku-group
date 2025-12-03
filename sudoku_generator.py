@@ -92,7 +92,7 @@ class SudokuGenerator:
     '''
     def valid_in_box(self, row_start, col_start, num):
         for r in range(0, 2):
-            if num in self.board[row_start+r][col_start+r]:
+            if num == self.board[row_start+r][col_start+r]:
                 return False
         return True
 
@@ -313,20 +313,20 @@ class Board:
         self.selected_cell = None
 
     def draw(self):
-        # Draw thin lines for every cell
+        # grid
         for i in range(10):
             y = i * 57
-            pygame.draw.line(self.screen, (0, 0, 0), (0, y), (513, y), 1)
+            pygame.draw.line(self.screen, (0, 0, 0), (142, y), (655, y), 1)
         for j in range(10):
-            x = j * 57
+            x = j * 57 + 142
             pygame.draw.line(self.screen, (0,0,0), (x, 0), (x, 513), 1)
 
-        # Draw bold lines to delineate 3x3 boxes
+        # bold lines
         for k in range(0, 10, 3):
             y = k * 57
-            pygame.draw.line(self.screen, (0,0,0), (0, y), (513, y), 3)
+            pygame.draw.line(self.screen, (0,0,0), (142, y), (655, y), 3)
         for k in range(0, 10, 3):
-            x = k * 57
+            x = k * 57 + 142
             pygame.draw.line(self.screen, (0,0,0), (x, 0), (x, 513), 3)
 
     def select(self, row, col):

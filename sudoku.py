@@ -85,8 +85,8 @@ while True:
                     if b.is_clicked(mouse_pos):
                         state = GAME  # starts game
                         difficulty = b.text  # stores difficulty
-                        #board = Board(513, 513, screen, difficulty)
-                        #board.draw()
+                        board = Board(513, 513, screen, difficulty)
+
 
             if state == GAME:
                 for b in game_buttons:
@@ -122,6 +122,7 @@ while True:
     elif state == GAME:
         screen.fill(game_bg)
         # draw board
+        board.draw()
         for b in game_buttons:
             b.draw(screen)
 

@@ -259,7 +259,7 @@ class Cell:
     def set_cell_value(self, value):
         self.value = value
         if value != 0:
-            self.skecthed_value = 0
+            self.sketched_value = 0
 
     def set_sketched_value(self, value):
         #set value for the sketched value in pygame

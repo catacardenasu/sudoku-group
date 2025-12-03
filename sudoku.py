@@ -123,6 +123,11 @@ while True:
         screen.fill(game_bg)
         # draw board
         board.draw()
+
+        for r in range(9):
+            for c in range(9):
+                board.cells[r][c].draw()
+
         for b in game_buttons:
             b.draw(screen)
 

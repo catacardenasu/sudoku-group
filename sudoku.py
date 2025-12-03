@@ -1,5 +1,7 @@
 import pygame
 import sys
+from sudoku_generator import Board
+
 
 pygame.init()
 
@@ -74,14 +76,15 @@ while True:
             if state == WELCOME:
                 for b in buttons:
                     if b.is_clicked(mouse_pos):
-                        state = GAME  # Start game regardless of difficulty
-                        difficulty = b.text  # Store difficulty if needed
+                        state = GAME
+
+                        difficulty = b.text
 
             elif state == GAME:
                 # For demo: Left click to "Win", Right click to "Lose"
-                if event.button == 1:
+                if Board.check_baord() == True:
                     state = WON
-                elif event.button == 3:
+                elif Board.check_baord() == False:
                     state = OVER
 
             elif state == WON:

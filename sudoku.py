@@ -41,6 +41,7 @@ class Button:
 
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)
+        pygame.draw.rect(surface, (0, 0, 0), self.rect, width=2)
         surface.blit(self.text_surface, self.text_rect)
 
     def is_clicked(self, pos):

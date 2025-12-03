@@ -91,9 +91,10 @@ class SudokuGenerator:
 	Return: boolean
     '''
     def valid_in_box(self, row_start, col_start, num):
-        for r in range(0, 2):
-            if num in self.board[row_start+r][col_start+r]:
-                return False
+        for r in range(0, 3):
+            for c in range(0, 3):
+                if num == self.board[row_start+r][col_start+c]:
+                    return False
         return True
 
     
@@ -241,10 +242,10 @@ Return: list[list] (a 2D Python list to represent the board)
 def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)
     sudoku.fill_values()
-    board = sudoku.get_board()
+    solution = sudoku.get_board()
     sudoku.remove_cells()
     board = sudoku.get_board()
-    return board
+    return board, solution
 
 class Cell:
     def __init__(self, value, row, col, screen):
@@ -258,7 +259,7 @@ class Cell:
     def set_cell_value(self, value):
         self.value = value
         if value != 0:
-            self.skecthed_value = 0
+            self.sketched_value = 0
 
     def set_sketched_value(self, value):
         #set value for the sketched value in pygame
@@ -267,7 +268,7 @@ class Cell:
     def draw(self):
         # 57 x 57
         cell_size = 513 // 9  # = 57 pixels per cell
-        x = self.col * cell_size
+        x = self.col * cell_size + 142
         y = self.row * cell_size
         rect = pygame.Rect(x, y, cell_size, cell_size)
 
@@ -275,13 +276,18 @@ class Cell:
         mouse_pos = pygame.mouse.get_pos()
         mouse_pressed = pygame.mouse.get_pressed()[0]  # left button
 
-        if rect.collidepoint(mouse_pos) and mouse_pressed:
+
+        if self.selected:
+            pygame.draw.rect(self.screen, (255, 0, 0), rect, 3)
+        elif rect.collidepoint(mouse_pos) and mouse_pressed:
             pygame.draw.rect(self.screen, (255, 0, 0), rect, 3)
         else:
             pygame.draw.rect(self.screen, (0, 0, 0), rect, 1)
 
         # Draw the main value if nonzero
-        if self.value != 0:
+        if self.value == 0:
+            pass
+        elif self.value != 0:
             font = pygame.font.SysFont("arial", 32)
             text = font.render(str(self.value), True, (0, 0, 0))
             text_rect = text.get_rect(center=rect.center)
@@ -299,35 +305,34 @@ class Board:
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
-
-        if difficulty == "easy":
+        if self.difficulty == "Easy":
             removed = 30
-        if difficulty == "medium":
+        if self.difficulty == "Medium":
             removed = 40
-        if difficulty == "hard":
+        if self.difficulty == "Hard":
             removed = 50
 
-        self.board = generate_sudoku(9, removed)
+        self.board, self.solution = generate_sudoku(9, removed)
         self.original_board = [row[:] for row in self.board]
 
         self.cells = [[Cell(self.board[r][c], r, c, screen) for c in range(9)] for r in range(9)]
         self.selected_cell = None
 
     def draw(self):
-        # Draw thin lines for every cell
+        # grid
         for i in range(10):
             y = i * 57
-            pygame.draw.line(self.screen, (0, 0, 0), (0, y), (513, y), 1)
+            pygame.draw.line(self.screen, (0, 0, 0), (142, y), (655, y), 1)
         for j in range(10):
-            x = j * 57
+            x = j * 57 + 142
             pygame.draw.line(self.screen, (0,0,0), (x, 0), (x, 513), 1)
 
-        # Draw bold lines to delineate 3x3 boxes
+        # bold lines
         for k in range(0, 10, 3):
             y = k * 57
-            pygame.draw.line(self.screen, (0,0,0), (0, y), (513, y), 3)
+            pygame.draw.line(self.screen, (0,0,0), (142, y), (655, y), 3)
         for k in range(0, 10, 3):
-            x = k * 57
+            x = k * 57 + 142
             pygame.draw.line(self.screen, (0,0,0), (x, 0), (x, 513), 3)
 
     def select(self, row, col):
@@ -370,7 +375,8 @@ class Board:
         # It will be displayed at the top left corner of the cell using the draw() function.
 
     def place_number(self, value):
-        pass
+        row, col = self.selected_cell
+        self.cells[row][col].set_cell_value(value)
     #     Sets the value of the current selected cell equal to the user entered value.
     # Called when the user presses the Enter key.
 
@@ -391,7 +397,13 @@ class Board:
         #Returns a Boolean value indicating whether the board is full or not.
 
     def update_board(self):
-        pass
+        updboard = []
+        for r in range(9):
+            row = []
+            for c in range(9):
+                row.append(self.cells[r][c].value)
+            updboard.append(row)
+        return updboard
         #Updates the underlying 2D board with the values in all cells.
 
     def find_empty(self):
@@ -403,22 +415,27 @@ class Board:
         #Finds an empty cell and returns its row and col as a tuple (x,y).
 
     def check_board(self):
-        for r in range(9):
-            nums = set()
-            for c in range(9):
-                if self.board[r][c] in nums:
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                if self.board[i][j] != self.solution[i][j]:
                     return False
-                nums.add(self.board[r][c])
-
-        for c in range(9):
-            nums = set()
-            for r in range(9):
-                if self.board[r][c] in nums:
-                    return False
-                nums.add(self.board[r][c])
-
-
         return True
+        # for r in range(9):
+        #     nums = set()
+        #     for c in range(9):
+        #         if self.board[r][c] in nums:
+        #             return False
+        #         nums.add(self.board[r][c])
+        #
+        # for c in range(9):
+        #     nums = set()
+        #     for r in range(9):
+        #         if self.board[r][c] in nums:
+        #             return False
+        #         nums.add(self.board[r][c])
+        #
+        #
+        # return True
 
 
 

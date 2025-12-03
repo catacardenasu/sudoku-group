@@ -268,7 +268,7 @@ class Cell:
     def draw(self):
         # 57 x 57
         cell_size = 513 // 9  # = 57 pixels per cell
-        x = self.col * cell_size
+        x = self.col * cell_size + 142
         y = self.row * cell_size
         rect = pygame.Rect(x, y, cell_size, cell_size)
 

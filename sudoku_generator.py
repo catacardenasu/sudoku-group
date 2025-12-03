@@ -299,12 +299,11 @@ class Board:
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
-
-        if difficulty == "easy":
+        if self.difficulty == "Easy":
             removed = 30
-        if difficulty == "medium":
+        if self.difficulty == "Medium":
             removed = 40
-        if difficulty == "hard":
+        if self.difficulty == "Hard":
             removed = 50
 
         self.board = generate_sudoku(9, removed)

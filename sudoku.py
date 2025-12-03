@@ -84,8 +84,10 @@ while True:
                     if b.is_clicked(mouse_pos):
                         state = GAME  # starts game
                         difficulty = b.text  # stores difficulty
+                        board = Board(513, 513, screen, difficulty)
+                        board.draw()
 
-            elif state == GAME:
+            if state == GAME:
                 for b in game_buttons:
                     if b.is_clicked(mouse_pos):
                         if b.text == "Reset":

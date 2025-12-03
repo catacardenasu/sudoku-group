@@ -406,7 +406,7 @@ class Board:
         for r in range(9):
             nums = set()
             for c in range(9):
-                if self.board[r][c] in nums():
+                if self.board[r][c] in nums:
                     return False
                 nums.add(self.board[r][c])
 

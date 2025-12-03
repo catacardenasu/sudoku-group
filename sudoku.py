@@ -65,6 +65,11 @@ game_buttons = [
     Button("Exit", WIDTH//2 + 120, HEIGHT - 80, 180, 50)
 ]
 
+
+board = None
+selected_row = 0
+selected_col = 0
+
 # Game loop
 clock = pygame.time.Clock()
 
@@ -87,6 +92,11 @@ while True:
                         difficulty = b.text  # stores difficulty
                         board = Board(513, 513, screen, difficulty)
 
+                        selected_row, selected_col = 0,0
+                        for r in range(9):
+                            for c in range(9):
+                                board.cells[r][c].selected = (r == selected_row and c == selected_col)
+
 
             if state == GAME:
                 for b in game_buttons:
@@ -107,6 +117,20 @@ while True:
             elif state == OVER:
                 if restart_button.is_clicked(mouse_pos):
                     state = WELCOME
+        # Handles keys
+        if event.type == pygame.KEYDOWN and state == GAME and board is not None:
+            if event.key == pygame.K_LEFT and selected_col > 0:
+                selected_col -= 1
+            elif event.key == pygame.K_RIGHT and selected_col < 8:
+                selected_col += 1
+            elif event.key == pygame.K_UP and selected_row > 0:
+                selected_row -= 1
+            elif event.key == pygame.K_DOWN and selected_row < 8:
+                selected_row += 1
+
+            for r in range(9):
+                for c in range(9):
+                    board.cells[r][c].selected = (r == selected_row and c == selected_col)
 
     # Draw depending on state
     if state == WELCOME:

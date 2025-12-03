@@ -276,7 +276,10 @@ class Cell:
         mouse_pos = pygame.mouse.get_pos()
         mouse_pressed = pygame.mouse.get_pressed()[0]  # left button
 
-        if rect.collidepoint(mouse_pos) and mouse_pressed:
+
+        if self.selected:
+            pygame.draw.rect(self.screen, (255, 0, 0), rect, 3)
+        elif rect.collidepoint(mouse_pos) and mouse_pressed:
             pygame.draw.rect(self.screen, (255, 0, 0), rect, 3)
         else:
             pygame.draw.rect(self.screen, (0, 0, 0), rect, 1)

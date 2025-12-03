@@ -370,7 +370,8 @@ class Board:
         # It will be displayed at the top left corner of the cell using the draw() function.
 
     def place_number(self, value):
-        pass
+        row, col = self.selected_cell
+        self.cells[row][col].set_cell_value(value)
     #     Sets the value of the current selected cell equal to the user entered value.
     # Called when the user presses the Enter key.
 

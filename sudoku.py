@@ -124,6 +124,7 @@ while True:
         # draw board
         board.draw()
 
+
         for r in range(9):
             for c in range(9):
                 board.cells[r][c].draw()

@@ -282,7 +282,9 @@ class Cell:
             pygame.draw.rect(self.screen, (0, 0, 0), rect, 1)
 
         # Draw the main value if nonzero
-        if self.value != 0:
+        if self.value == 0:
+            pass
+        elif self.value != 0:
             font = pygame.font.SysFont("arial", 32)
             text = font.render(str(self.value), True, (0, 0, 0))
             text_rect = text.get_rect(center=rect.center)

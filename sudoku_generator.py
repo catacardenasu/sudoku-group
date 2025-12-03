@@ -253,7 +253,7 @@ class Cell:
         self.row = row
         self.col = col
         self.screen = screen
-        self.sketched_value = None
+        self.sketched_value = 0
         self.selected = False
 
     def set_cell_value(self, value):
@@ -285,9 +285,7 @@ class Cell:
             pygame.draw.rect(self.screen, (0, 0, 0), rect, 1)
 
         # Draw the main value if nonzero
-        if self.value == 0:
-            pass
-        elif self.value != 0:
+        if self.value != 0:
             font = pygame.font.SysFont("arial", 32)
             text = font.render(str(self.value), True, (0, 0, 0))
             text_rect = text.get_rect(center=rect.center)
@@ -305,6 +303,8 @@ class Board:
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
+        self.selected_cell = None
+
         if self.difficulty == "Easy":
             removed = 30
         if self.difficulty == "Medium":
@@ -336,11 +336,11 @@ class Board:
             pygame.draw.line(self.screen, (0,0,0), (x, 0), (x, 513), 3)
 
     def select(self, row, col):
-        if self.selected_cell:
-            r,c = self.selected_cell
-            self.cells[r][c].selected = False
-        self.selected_cell = (row, col)
+        for r in range(9):
+            for c in range(9):
+                self.cells[r][c].selected = False
         self.cells[row][col].selected = True
+        self.selected_cell = (row, col)
         # Marks the cell at (row, col) in the board as the current selected cell.
         # Once a cell has been selected, the user can edit its value or sketched value.
 
@@ -375,15 +375,18 @@ class Board:
         # It will be displayed at the top left corner of the cell using the draw() function.
 
     def place_number(self, value):
-        row, col = self.selected_cell
-        self.cells[row][col].set_cell_value(value)
+        if self.selected_cell:
+            r, c = self.selected_cell
+            if self.original_board[r][c] == 0:
+                self.cells[r][c].set_cell_value(value)
     #     Sets the value of the current selected cell equal to the user entered value.
     # Called when the user presses the Enter key.
 
     def reset_to_original(self):
-        for r in range (9):
-            for c in range (9):
-                self.cells[r][c].set_cell_value(0)
+        for r in range(9):
+            for c in range(9):
+                self.cells[r][c].set_cell_value(self.original_board[r][c])
+                self.cells[r][c].set_sketched_value(0)
         #Resets all cells in the board to their original values
         #(0 if cleared, otherwise the corresponding digit).
 

@@ -106,13 +106,17 @@ while True:
                 for b in game_buttons:
                     if b.is_clicked(mouse_pos):
                         if b.text == "Reset":
-                            # RESETS BOARD (ADD THIS)
-                            pass
+                            board.reset_to_original()
+
                         elif b.text == "Restart":
                             state = WELCOME
                         elif b.text == "Exit":
                             # exits out the program
                             pygame.quit()
+                click = board.click(mouse_pos[0] - 142, mouse_pos[1])
+                if click:
+                    board.select(click[0], click[1])
+
 
             elif state == WON:
                 if exit_button.is_clicked(mouse_pos):
@@ -132,9 +136,42 @@ while True:
             elif event.key == pygame.K_DOWN and selected_row < 8:
                 selected_row += 1
 
+
             for r in range(9):
                 for c in range(9):
                     board.cells[r][c].selected = (r == selected_row and c == selected_col)
+
+            if event.key == pygame.K_1:
+                board.place_number(1)
+            elif event.key == pygame.K_2:
+                board.place_number(2)
+            elif event.key == pygame.K_3:
+                board.place_number(3)
+            elif event.key == pygame.K_4:
+                board.place_number(4)
+            elif event.key == pygame.K_5:
+                board.place_number(5)
+            elif event.key == pygame.K_6:
+                board.place_number(6)
+            elif event.key == pygame.K_7:
+                board.place_number(7)
+            elif event.key == pygame.K_8:
+                board.place_number(8)
+            elif event.key == pygame.K_9:
+                board.place_number(9)
+
+            elif event.key == pygame.K_RETURN:
+                board.place_number(board.cells[selected_row][selected_col].sketched_value)
+                board.update_board()
+
+                if board.is_full():
+                    if board.check_board():
+                        state = WON
+                    else:
+                        state = OVER
+
+            elif event.key == pygame.K_BACKSPACE:
+                board.clear()
 
     # Draw depending on state
     if state == WELCOME:

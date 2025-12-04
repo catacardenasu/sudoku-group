@@ -118,7 +118,7 @@ while True:
 
             elif state == WON:
                 if exit_button.is_clicked(mouse_pos):
-                    state = WELCOME
+                    pygame.quit()
 
             elif state == OVER:
                 if restart_button.is_clicked(mouse_pos):
